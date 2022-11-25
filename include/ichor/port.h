@@ -14,6 +14,8 @@
 #define PORT_DEAD (~0)
 #define PORT_NULL (0)
 
+#define PORT_COMMON_BOOTSTRAP 0
+
 typedef struct __attribute__((packed))
 {
     uint8_t type;        /* Type of message */

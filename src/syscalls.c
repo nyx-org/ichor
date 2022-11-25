@@ -18,7 +18,7 @@ uint64_t syscall0(int syscall)
 
 uint64_t syscall1(int syscall, uint64_t param1)
 {
-    uint64_t ret;
+    uint64_t ret = 0;
 
     __asm__ volatile("int $0x42"
                      : "=b"(sys_errno), "=a"(ret)
@@ -95,7 +95,7 @@ void sys_register_common_port(Port id, Port port)
 VmObject sys_vm_create(size_t size, uintptr_t addr, uint16_t flags)
 {
     VmObject ret;
-    struct
+    struct __attribute__((packed))
     {
         size_t size;
         uintptr_t addr;
@@ -107,9 +107,16 @@ VmObject sys_vm_create(size_t size, uintptr_t addr, uint16_t flags)
     return ret;
 }
 
+Task sys_create_task(void)
+{
+    Task ret;
+    syscall1(SYS_CREATE_TASK, (uint64_t)&ret);
+    return ret;
+}
+
 void sys_start_task(Task *task, uintptr_t entry_point)
 {
-    syscall4(SYS_START_TASK, (uintptr_t)task, entry_point, -1, true);
+    syscall4(SYS_START_TASK, (uintptr_t)task, entry_point, 0, true);
 }
 
 void sys_start_task_stack(Task *task, uintptr_t entry_point, uintptr_t stack_ptr, bool alloc)
@@ -117,9 +124,14 @@ void sys_start_task_stack(Task *task, uintptr_t entry_point, uintptr_t stack_ptr
     syscall4(SYS_START_TASK, (uintptr_t)task, entry_point, stack_ptr, alloc);
 }
 
-void sys_vm_map(VmObject *vm, uint16_t protection, uintptr_t vaddr, uint16_t flags)
+size_t sys_vm_write(void *space, uintptr_t address, void *buffer, size_t count)
 {
-    struct
+    return syscall4(SYS_VM_WRITE, (uintptr_t)space, address, (uintptr_t)buffer, count);
+}
+
+void sys_vm_map(void *space, VmObject *vm, uint16_t protection, uintptr_t vaddr, uint16_t flags)
+{
+    struct __attribute__((packed))
     {
         VmObject *object;
         uint16_t protection;
@@ -127,5 +139,5 @@ void sys_vm_map(VmObject *vm, uint16_t protection, uintptr_t vaddr, uint16_t fla
         uint16_t flags;
     } params = {vm, protection, vaddr, flags};
 
-    syscall1(SYS_VM_MAP, (uintptr_t)&params);
+    syscall2(SYS_VM_MAP, (uint64_t)space, (uintptr_t)&params);
 }

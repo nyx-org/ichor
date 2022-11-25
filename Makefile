@@ -3,7 +3,7 @@ SRCS = $(wildcard src/*.c)
 OBJS = $(SRCS:src/%.c=$(BUILD_DIR)/%.c.o)
 TARGET = $(BUILD_DIR)/libichor.a
 CC = clang
-CFLAGS = -ffreestanding -fno-stack-protector -nostdlib -Wall -Wextra -Werror -Iinclude
+CFLAGS = -ffreestanding -fno-stack-protector -nostdlib -Wall -Wextra -Werror -Iinclude -fno-pie -fno-pic -target x86_64-unknown-elf -fno-stack-check
 
 MKCWD = mkdir -p $(@D)
 

@@ -49,7 +49,7 @@ void sys_register_common_port(Port id, Port port);
 VmObject sys_vm_create(size_t size, uintptr_t addr, uint16_t flags);
 
 /* Creates a new task */
-Task *sys_create_task(void);
+Task sys_create_task(void);
 
 /* Starts a task at entry_point `entry_point` */
 void sys_start_task(Task *task, uintptr_t entry_point);
@@ -57,7 +57,10 @@ void sys_start_task(Task *task, uintptr_t entry_point);
 /* Starts a task at entry_point `entry_point`, with stack pointer `stack_ptr`, allocates if `alloc` is true */
 void sys_start_task_stack(Task *task, uintptr_t entry_point, uintptr_t stack_ptr, bool alloc);
 
+/* Writes `count` bytes from `buffer` to `address` in memory space `space` */
+size_t sys_vm_write(void *space, uintptr_t address, void *buffer, size_t count);
+
 /* Map object `vm` with protection `protection` at virtual address `vaddr` (optional) with flags `flags` */
-void sys_vm_map(VmObject *vm, uint16_t protection, uintptr_t vaddr, uint16_t flags);
+void sys_vm_map(void *space, VmObject *vm, uint16_t protection, uintptr_t vaddr, uint16_t flags);
 
 #endif
