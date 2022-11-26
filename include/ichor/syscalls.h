@@ -1,11 +1,9 @@
 #ifndef ICHOR_SYSCALLS_H
 #define ICHOR_SYSCALLS_H
+#include <ichor/base.h>
 #include <ichor/port.h>
 #include <ichor/task.h>
 #include <ichor/vm.h>
-#include <stdbool.h>
-#include <stddef.h>
-#include <stdint.h>
 
 #define SYS_LOG 0
 #define SYS_EXIT 1
