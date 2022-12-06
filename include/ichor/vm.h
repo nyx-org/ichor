@@ -11,7 +11,7 @@
 
 #define VM_MAP_ANONYMOUS (1 << 0)
 #define VM_MAP_FIXED (1 << 1)
-#define VM_MAP_PHYS (1 << 2)
+#define VM_MAP_DMA (1 << 2)
 
 typedef struct __attribute__((packed))
 {

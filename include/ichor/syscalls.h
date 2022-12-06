@@ -2,6 +2,7 @@
 #define ICHOR_SYSCALLS_H
 #include <ichor/base.h>
 #include <ichor/port.h>
+#include <ichor/rights.h>
 #include <ichor/task.h>
 #include <ichor/vm.h>
 
@@ -16,6 +17,7 @@
 #define SYS_START_TASK 8
 #define SYS_VM_WRITE 9
 #define SYS_VM_MAP 10
+#define SYS_VM_REGISTER_DMA_REGION 11
 
 extern int sys_errno;
 
@@ -46,8 +48,8 @@ void sys_register_common_port(Port id, Port port);
 /* Creates a new VmObject with size `size`, flags `flags` and addr `addr` */
 VmObject sys_vm_create(size_t size, uintptr_t addr, uint16_t flags);
 
-/* Creates a new task */
-Task sys_create_task(void);
+/* Creates a new task with rights `rights` */
+Task sys_create_task(Rights rights);
 
 /* Starts a task at entry_point `entry_point` */
 void sys_start_task(Task *task, uintptr_t entry_point);
@@ -60,5 +62,7 @@ size_t sys_vm_write(void *space, uintptr_t address, void *buffer, size_t count);
 
 /* Map object `vm` with protection `protection` at virtual address `vaddr` (optional) with flags `flags` */
 void sys_vm_map(void *space, VmObject *vm, uint16_t protection, uintptr_t vaddr, uint16_t flags);
+
+void sys_vm_register_dma_region(void *space, uintptr_t addr, size_t size, uint16_t flags);
 
 #endif

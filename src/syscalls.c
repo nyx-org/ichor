@@ -107,10 +107,10 @@ VmObject sys_vm_create(size_t size, uintptr_t addr, uint16_t flags)
     return ret;
 }
 
-Task sys_create_task(void)
+Task sys_create_task(Rights rights)
 {
     Task ret;
-    syscall1(SYS_CREATE_TASK, (uint64_t)&ret);
+    syscall2(SYS_CREATE_TASK, (uint64_t)&ret, rights);
     return ret;
 }
 
@@ -140,4 +140,9 @@ void sys_vm_map(void *space, VmObject *vm, uint16_t protection, uintptr_t vaddr,
     } params = {vm, protection, vaddr, flags};
 
     syscall2(SYS_VM_MAP, (uint64_t)space, (uintptr_t)&params);
+}
+
+void sys_vm_register_dma_region(void *space, uintptr_t addr, size_t size, uint16_t flags)
+{
+    syscall4(SYS_VM_REGISTER_DMA_REGION, (uint64_t)space, addr, size, flags);
 }
