@@ -1,0 +1,3 @@
+[submodule "subprojects/stdc-shim"]
+	path = subprojects/stdc-shim
+	url = https://github.com/nyx-org/stdc-shim
