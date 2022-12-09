@@ -27,12 +27,9 @@ int ichor_exec_elf(Task *task, uint8_t *elf_buffer)
             size_t misalign = program_header->p_vaddr & (4096 - 1);
             size_t page_count = DIV_CEIL(misalign + program_header->p_memsz, 4096);
 
-            for (size_t i = 0; i < page_count; i++)
-            {
-                VmObject obj = sys_vm_create(4096, 0, 0);
-                sys_vm_map(task->space, &obj, VM_PROT_READ | VM_PROT_WRITE | VM_PROT_EXEC, program_header->p_vaddr, VM_MAP_FIXED);
-                sys_vm_write(task->space, program_header->p_vaddr, (void *)(elf_buffer + program_header->p_offset), program_header->p_filesz);
-            }
+            VmObject obj = sys_vm_create(page_count * 4096, 0, 0);
+            sys_vm_map(task->space, &obj, VM_PROT_READ | VM_PROT_WRITE | VM_PROT_EXEC, program_header->p_vaddr, VM_MAP_FIXED);
+            sys_vm_write(task->space, program_header->p_vaddr, (void *)(elf_buffer + program_header->p_offset), program_header->p_filesz);
         }
 
         program_header = (Elf64ProgramHeader *)((uint8_t *)program_header + header->e_phentsize);

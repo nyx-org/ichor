@@ -4,7 +4,7 @@
 #include <stdc-shim/stdlib.h>
 #include <stdc-shim/string.h>
 
-static void vsprintf(const char *buffer, const char *fmt, va_list args)
+static void vsprintf(char *buffer, const char *fmt, va_list args)
 {
     const char *s = fmt;
     while (*s)
@@ -72,6 +72,7 @@ static void vsprintf(const char *buffer, const char *fmt, va_list args)
 
 void ichor_debug(const char *fmt, ...)
 {
+
     va_list args;
     va_start(args, fmt);
     char buf[4096] = {0};
