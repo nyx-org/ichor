@@ -29,5 +29,8 @@ typedef struct __attribute__((packed))
 typedef uint32_t Port;
 
 int ichor_wait_for_message(Port port, size_t size, void *buffer);
+int ichor_send_bidirectional_message(Port port_to_reply_on, PortMessageHeader *message);
+PortMessageHeader *ichor_send_and_wait_for_reply(PortMessageHeader *message);
+PortMessageHeader *ichor_send_and_wait_for_reply_port(Port port, PortMessageHeader *message);
 
 #endif
