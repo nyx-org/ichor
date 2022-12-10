@@ -82,6 +82,11 @@ Port sys_alloc_port(uint8_t rights)
     return syscall1(SYS_ALLOC_PORT, rights);
 }
 
+void sys_free_port(Port port)
+{
+    syscall1(SYS_FREE_PORT, port);
+}
+
 Port sys_get_common_port(Port id)
 {
     return syscall1(SYS_GET_COMMON_PORT, id);

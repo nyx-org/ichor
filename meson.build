@@ -1,6 +1,6 @@
 project('ichor', 'c')
 
-sources = files('src/exec.c', 'src/syscalls.c', 'src/debug.c')
+sources = files('src/exec.c', 'src/syscalls.c', 'src/debug.c', 'src/port.c')
 
 stdc = subproject('stdc-shim')
 

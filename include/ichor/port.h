@@ -1,5 +1,6 @@
 #ifndef ICHOR_PORT_H
 #define ICHOR_PORT_H
+#include <stddef.h>
 #include <stdint.h>
 
 #define PORT_SEND (0)
@@ -10,6 +11,7 @@
 
 #define PORT_MSG_TYPE_DEFAULT (1 << 0)
 #define PORT_MSG_TYPE_RIGHT (1 << 1)
+#define PORT_MSG_TYPE_RIGHT_ONCE (1 << 2)
 
 #define PORT_DEAD (~0)
 #define PORT_NULL (0)
@@ -25,4 +27,7 @@ typedef struct __attribute__((packed))
 } PortMessageHeader;
 
 typedef uint32_t Port;
+
+int ichor_wait_for_message(Port port, size_t size, void *buffer);
+
 #endif

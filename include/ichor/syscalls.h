@@ -18,6 +18,7 @@
 #define SYS_VM_WRITE 9
 #define SYS_VM_MAP 10
 #define SYS_VM_REGISTER_DMA_REGION 11
+#define SYS_FREE_PORT 12
 
 extern int sys_errno;
 
@@ -38,6 +39,9 @@ size_t sys_msg(uint8_t msg_type, Port port_to_receive, size_t bytes_to_receive, 
 
 /* Allocates a port and returns it */
 Port sys_alloc_port(uint8_t rights);
+
+/* Frees a port */
+void sys_free_port(Port port);
 
 /* Returns a port right to the common port `id` */
 Port sys_get_common_port(Port id);
