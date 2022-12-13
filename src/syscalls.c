@@ -151,3 +151,8 @@ void sys_vm_register_dma_region(void *space, uintptr_t addr, size_t size, uint16
 {
     syscall4(SYS_VM_REGISTER_DMA_REGION, (uint64_t)space, addr, size, flags);
 }
+
+void sys_yield()
+{
+    syscall0(SYS_YIELD);
+}
