@@ -46,3 +46,15 @@ PortMessageHeader *ichor_send_and_wait_for_reply_port(Port port, PortMessageHead
 
     return message;
 }
+
+PortMessageHeader *ichor_send_port_right_and_wait_for_reply(Port port, PortMessageHeader *message, size_t size_to_recv, PortMessageHeader *recv)
+{
+    message->type = PORT_MSG_TYPE_RIGHT;
+    message->port_right = port;
+
+    sys_msg(PORT_SEND, PORT_NULL, -1, message);
+
+    ichor_wait_for_message(port, size_to_recv, recv);
+
+    return message;
+}
