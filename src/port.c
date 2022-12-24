@@ -10,6 +10,10 @@ int ichor_wait_for_message(Port port, size_t size, void *buffer)
         {
             sys_yield();
         }
+	else
+	{
+	    break;
+	}
     }
 
     return ERR_SUCCESS;
