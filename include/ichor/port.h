@@ -20,10 +20,18 @@
 
 typedef struct __attribute__((packed))
 {
-    uint8_t type;        /* Type of message */
-    uint32_t size;       /* Size of payload */
-    uint32_t dest;       /* Destination port */
-    uint32_t port_right; /* Optional: Port right to send */
+    uintptr_t address;
+    uint16_t size;
+} PortSharedMemoryDescriptor;
+
+typedef struct __attribute__((packed))
+{
+    uint8_t type;                         /* Type of message */
+    uint32_t size;                        /* Size of payload */
+    uint32_t dest;                        /* Destination port */
+    uint32_t port_right;                  /* Optional: Port right to send */
+    uint8_t shmd_count;                   /* Shared memory descriptor count */
+    PortSharedMemoryDescriptor shmds[16]; /* Shared memory descriptors */
 } PortMessageHeader;
 
 typedef uint32_t Port;
