@@ -20,6 +20,7 @@
 #define SYS_VM_REGISTER_DMA_REGION 11
 #define SYS_FREE_PORT 12
 #define SYS_YIELD 13
+#define SYS_GETPID 14
 
 extern int sys_errno;
 
@@ -70,6 +71,8 @@ void sys_vm_map(void *space, VmObject *vm, uint16_t protection, uintptr_t vaddr,
 
 void sys_vm_register_dma_region(void *space, uintptr_t addr, size_t size, uint16_t flags);
 
-void sys_yield();
+void sys_yield(void);
+
+int sys_getpid(void);
 
 #endif

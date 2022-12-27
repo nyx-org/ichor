@@ -156,3 +156,8 @@ void sys_yield()
 {
     syscall0(SYS_YIELD);
 }
+
+int sys_getpid(void)
+{
+    syscall0(SYS_GETPID);
+}
