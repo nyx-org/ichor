@@ -159,5 +159,5 @@ void sys_yield()
 
 int sys_getpid(void)
 {
-    syscall0(SYS_GETPID);
+    return syscall0(SYS_GETPID);
 }
