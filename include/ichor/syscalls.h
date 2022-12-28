@@ -21,6 +21,7 @@
 #define SYS_FREE_PORT 12
 #define SYS_YIELD 13
 #define SYS_GETPID 14
+#define SYS_GET_TASK 15
 
 extern int sys_errno;
 
@@ -74,5 +75,7 @@ void sys_vm_register_dma_region(void *space, uintptr_t addr, size_t size, uint16
 void sys_yield(void);
 
 int sys_getpid(void);
+
+void sys_get_current_task(Task *task);
 
 #endif

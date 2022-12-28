@@ -161,3 +161,8 @@ int sys_getpid(void)
 {
     return syscall0(SYS_GETPID);
 }
+
+void sys_get_current_task(Task *task)
+{
+    syscall1(SYS_GET_TASK, (uintptr_t)task);
+}
