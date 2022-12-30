@@ -18,13 +18,13 @@
 
 #define PORT_COMMON_BOOTSTRAP 0
 
-typedef struct __attribute__((packed))
+typedef struct
 {
     uintptr_t address;
-    uint16_t size;
+    size_t size;
 } PortSharedMemoryDescriptor;
 
-typedef struct __attribute__((packed))
+typedef struct
 {
     uint8_t type;                         /* Type of message */
     uint32_t size;                        /* Size of payload */

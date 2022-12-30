@@ -12,7 +12,8 @@ uint64_t syscall0(int syscall)
 
     __asm__ volatile("int $0x42"
                      : "=b"(sys_errno), "=a"(ret)
-                     : "a"(syscall));
+                     : "a"(syscall)
+                     : "r10", "r11", "memory");
     return ret;
 }
 
@@ -22,7 +23,8 @@ uint64_t syscall1(int syscall, uint64_t param1)
 
     __asm__ volatile("int $0x42"
                      : "=b"(sys_errno), "=a"(ret)
-                     : "a"(syscall), "D"(param1));
+                     : "a"(syscall), "D"(param1)
+                     : "r10", "r11", "memory");
 
     return ret;
 }
@@ -33,7 +35,8 @@ uint64_t syscall2(int syscall, uint64_t param1, uint64_t param2)
 
     __asm__ volatile("int $0x42"
                      : "=b"(sys_errno), "=a"(ret)
-                     : "a"(syscall), "D"(param1), "S"(param2));
+                     : "a"(syscall), "D"(param1), "S"(param2)
+                     : "r10", "r11", "memory");
 
     return ret;
 }
@@ -44,7 +47,8 @@ uint64_t syscall3(int syscall, uint64_t param1, uint64_t param2, uint64_t param3
 
     __asm__ volatile("int $0x42"
                      : "=b"(sys_errno), "=a"(ret)
-                     : "a"(syscall), "D"(param1), "S"(param2), "d"(param3));
+                     : "a"(syscall), "D"(param1), "S"(param2), "d"(param3)
+                     : "r10", "r11", "memory");
 
     return ret;
 }
@@ -55,7 +59,8 @@ uint64_t syscall4(int syscall, uint64_t param1, uint64_t param2, uint64_t param3
 
     __asm__ volatile("int $0x42"
                      : "=b"(sys_errno), "=a"(ret)
-                     : "a"(syscall), "D"(param1), "S"(param2), "d"(param3), "c"(param4));
+                     : "a"(syscall), "D"(param1), "S"(param2), "d"(param3), "c"(param4)
+                     : "r10", "r11", "memory");
 
     return ret;
 }
