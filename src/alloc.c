@@ -1,30 +1,49 @@
 #include <ichor/alloc.h>
 #include <ichor/debug.h>
-#include <ichor/liballoc.h>
+#include <ichor/libheap.h>
 #include <ichor/syscalls.h>
 #include <ichor/vm.h>
 
-void *liballoc_alloc(size_t n)
+void *heap_hook_alloc_block(void *ctx, size_t size)
 {
-    VmObject object = sys_vm_create(n * 4096, 0, 0);
+    (void)ctx;
+
+    VmObject object = sys_vm_create(size, 0, 0);
     sys_vm_map(NULL, &object, VM_PROT_READ | VM_PROT_WRITE, -1, VM_MAP_ANONYMOUS);
 
     return object.buf;
 }
 
-int liballoc_free(void *ptr, size_t n)
+void heap_hook_free_block(void *ctx, void *ptr, size_t size)
 {
-    (void)ptr;
-    (void)n;
-    return 0;
+    (void)ctx;
+    // munmap(ptr, size);
 }
 
-int liballoc_lock()
+struct Heap _heap = {
+    .alloc = heap_hook_alloc_block,
+    .free = heap_hook_free_block,
+};
+
+void *ichor_malloc(size_t size)
 {
-    return 0;
+    void *res = heap_alloc(&_heap, size);
+    return res;
 }
 
-int liballoc_unlock()
+void ichor_free(void *ptr)
 {
-    return 0;
+    heap_free(&_heap, ptr);
+}
+
+void *ichor_realloc(void *ptr, size_t size)
+{
+    void *res = heap_realloc(&_heap, ptr, size);
+    return res;
+}
+
+void *ichor_calloc(size_t num, size_t size)
+{
+    void *res = heap_calloc(&_heap, num, size);
+    return res;
 }
