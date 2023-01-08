@@ -1,30 +1,7 @@
-/*
-
-MIT License
-
-Copyright (c) 2022 Développement Système Exploitation
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-*/
 #ifndef LIBHEAP_H
 #define LIBHEAP_H
 
+#include <stdarg.h>
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
@@ -36,66 +13,67 @@ SOFTWARE.
 #define HEAP_PAGE_SIZE (4096)
 #define HEAP_MIN_REQU (4096 * 4)
 #define HEAP_ALIGNED(X) (((X) + (HEAP_ALIGN - 1)) & ~(HEAP_ALIGN - 1))
-#define HEAP_PAGE_ALIGNED(X) \
-    (((X) + (HEAP_PAGE_SIZE - 1)) & ~(HEAP_PAGE_SIZE - 1))
+#define HEAP_PAGE_ALIGNED(X)                                                   \
+  (((X) + (HEAP_PAGE_SIZE - 1)) & ~(HEAP_PAGE_SIZE - 1))
 
-struct HeapNode
-{
-    union
-    {
-        uint64_t magic;
-        uint8_t m[8];
-    };
-    struct HeapNode *prev;
-    struct HeapNode *next;
+struct HeapNode {
+  union {
+    uint64_t magic;
+    uint8_t m[8];
+  };
+  struct HeapNode *prev;
+  struct HeapNode *next;
 };
 
-#define HEAP_NODE(T)          \
-    union                     \
-    {                         \
-        struct HeapNode base; \
-        struct                \
-        {                     \
-            uint64_t magic;   \
-            T *prev;          \
-            T *next;          \
-        };                    \
-    }
+#define HEAP_NODE(T)                                                           \
+  union {                                                                      \
+    struct HeapNode base;                                                      \
+    struct {                                                                   \
+      uint64_t magic;                                                          \
+      T *prev;                                                                 \
+      T *next;                                                                 \
+    };                                                                         \
+  }
 
-struct HeapMajor
-{
-    HEAP_NODE(struct HeapMajor);
+struct HeapMajor {
+  HEAP_NODE(struct HeapMajor);
 
-    size_t size;
-    size_t used;
-    struct HeapMinor *minor;
+  size_t size;
+  size_t used;
+  struct HeapMinor *minor;
 };
 
-struct HeapMinor
-{
-    HEAP_NODE(struct HeapMinor);
+struct HeapMinor {
+  HEAP_NODE(struct HeapMinor);
 
-    size_t size;
-    size_t used;
-    struct HeapMajor *major;
+  size_t size;
+  size_t used;
+  struct HeapMajor *major;
 };
 
 typedef void *HeapAllocBlockFn(void *ctx, size_t size);
 
 typedef void HeapFreeBlockFn(void *ctx, void *ptr, size_t size);
 
-typedef void HeapErrorFn(void *ctx, const char *msg);
-
-struct Heap
-{
-    void *ctx;
-    HeapAllocBlockFn *alloc;
-    HeapFreeBlockFn *free;
-    HeapErrorFn *error;
-
-    struct HeapMajor *root;
-    struct HeapMajor *best;
+enum HeapLogType {
+  HEAP_TRACE,
+  HEAP_ERROR,
 };
+
+typedef void HeapLogFn(void *ctx, enum HeapLogType type, const char *fmt,
+                       va_list args);
+
+struct Heap {
+  void *ctx;
+  HeapAllocBlockFn *alloc;
+  HeapFreeBlockFn *free;
+  HeapLogFn *log;
+
+  struct HeapMajor *root;
+  struct HeapMajor *best;
+};
+
+/* ---- Internal functions -------------------------------------------------- */
 
 /* Heap hook functions */
 
@@ -103,7 +81,9 @@ void *heap_alloc_block(struct Heap *heap, size_t size);
 
 void heap_free_block(struct Heap *heap, void *ptr, size_t size);
 
-void heap_error(struct Heap *heap, const char *msg);
+void heap_trace(struct Heap *heap, const char *msg, ...);
+
+void heap_error(struct Heap *heap, const char *msg, ...);
 
 /* Heap node functions */
 
@@ -121,11 +101,10 @@ size_t heap_major_avail(struct HeapMajor *maj);
 
 struct HeapMajor *heap_major_create(struct Heap *heap, size_t size);
 
-struct HeapMinor *heap_major_alloc(struct HeapMajor *maj, size_t size);
+struct HeapMinor *heap_major_alloc(struct Heap *heap, struct HeapMajor *maj,
+                                   size_t size);
 
 void heap_major_free(struct Heap *heap, struct HeapMajor *maj);
-
-struct HeapMinor *heap_major_alloc(struct HeapMajor *maj, size_t size);
 
 /* Heap minor functions */
 
@@ -143,7 +122,7 @@ struct HeapMinor *heap_minor_from(void *ptr);
 
 void *heap_minor_to(struct HeapMinor *min);
 
-/* Heap functions */
+/* ---- Public functions ---------------------------------------------------- */
 
 void *heap_alloc(struct Heap *heap, size_t size);
 
